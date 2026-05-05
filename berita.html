@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Berita & Karya Siswa — ROOTS SMA IT Ukhuwah</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary:   #4A90E2;
+  --primary-dk:#2c6fbe;
+  --teal:      #50E3C2;
+  --azure:     #F0F7FF;
+  --charcoal:  #333333;
+  --charcoal-2:#555555;
+  --charcoal-3:#888888;
+  --border:    #e8edf2;
+  --white:     #ffffff;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Montserrat',sans-serif;background:#f8fafc;color:var(--charcoal)}
+
+/* NAV */
+nav{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.nav-top{display:flex;align-items:center;justify-content:space-between;padding:12px 5%}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo img{height:36px;object-fit:contain}
+.nav-div{width:1px;height:28px;background:linear-gradient(to bottom,transparent,rgba(74,144,226,.4),transparent)}
+.nav-brand .name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--primary);letter-spacing:3px;display:block;line-height:1.1}
+.nav-brand .sub{font-size:.57rem;color:var(--charcoal-3);letter-spacing:1.3px;text-transform:uppercase}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-back{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border:1.5px solid rgba(74,144,226,.3);border-radius:30px;color:var(--primary);text-decoration:none;font-size:.75rem;font-weight:600;letter-spacing:.5px;transition:all .3s}
+.nav-back:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* CATEGORY BAR */
+.cat-bar{background:#fff;border-bottom:2px solid var(--border);padding:0 5%;display:flex;gap:0;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none}
+.cat-bar::-webkit-scrollbar{display:none}
+.cat-btn{padding:14px 20px;font-size:.74rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--charcoal-3);border:none;border-bottom:2.5px solid transparent;background:transparent;cursor:pointer;white-space:nowrap;transition:all .3s;margin-bottom:-2px}
+.cat-btn:hover{color:var(--primary)}
+.cat-btn.active{color:var(--primary);border-bottom-color:var(--primary)}
+
+/* LAYOUT */
+.container{max-width:1200px;margin:0 auto;padding:36px 5%}
+.page-header{margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.page-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:var(--charcoal);margin-bottom:6px}
+.page-header p{font-size:.84rem;font-weight:300;color:var(--charcoal-3)}
+
+.main-layout{display:grid;grid-template-columns:1fr 320px;gap:40px;align-items:start}
+
+/* FEATURED (TOP) */
+.featured-card{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:12px;overflow:hidden;background:#fff;border:1px solid var(--border);box-shadow:0 2px 16px rgba(0,0,0,.06);margin-bottom:32px;cursor:pointer;transition:box-shadow .3s}
+.featured-card:hover{box-shadow:0 8px 32px rgba(74,144,226,.15)}
+.featured-img{position:relative;aspect-ratio:16/10;overflow:hidden}
+.featured-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.featured-card:hover .featured-img img{transform:scale(1.04)}
+.feat-cat{position:absolute;top:14px;left:14px;padding:4px 12px;background:var(--primary);border-radius:20px;font-size:.62rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#fff}
+.featured-body{padding:28px 32px;display:flex;flex-direction:column;justify-content:center}
+.feat-meta{display:flex;align-items:center;gap:10px;font-size:.68rem;color:var(--charcoal-3);margin-bottom:14px}
+.feat-meta span{display:flex;align-items:center;gap:4px}
+.feat-dot{width:3px;height:3px;background:var(--charcoal-3);border-radius:50%}
+.featured-body h2{font-family:'Playfair Display',serif;font-size:1.45rem;font-weight:700;line-height:1.35;color:var(--charcoal);margin-bottom:14px}
+.featured-body p{font-size:.85rem;font-weight:300;line-height:1.75;color:var(--charcoal-2);margin-bottom:20px}
+.read-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;background:var(--primary);border:none;border-radius:30px;color:#fff;font-family:'Montserrat',sans-serif;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .3s;text-decoration:none;align-self:flex-start}
+.read-btn:hover{background:var(--primary-dk);transform:translateY(-1px)}
+.read-btn svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ARTICLE LIST */
+.art-list{display:flex;flex-direction:column;gap:0}
+.art-item{display:grid;grid-template-columns:200px 1fr;gap:0;background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;cursor:pointer;transition:all .3s}
+.art-item:hover{box-shadow:0 6px 24px rgba(74,144,226,.12);border-color:rgba(74,144,226,.25);transform:translateY(-2px)}
+.art-thumb{position:relative;overflow:hidden}
+.art-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.art-item:hover .art-thumb img{transform:scale(1.06)}
+.art-thumb-cat{position:absolute;top:10px;left:10px;padding:3px 9px;background:var(--primary);border-radius:12px;font-size:.58rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff}
+.art-body{padding:18px 22px;display:flex;flex-direction:column;justify-content:space-between}
+.art-body h3{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;line-height:1.4;color:var(--charcoal);margin-bottom:8px}
+.art-body p{font-size:.79rem;font-weight:300;line-height:1.65;color:var(--charcoal-2);margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.art-meta{display:flex;align-items:center;gap:10px;font-size:.67rem;color:var(--charcoal-3)}
+
+/* SIDEBAR */
+.sidebar{}
+.sidebar-section{background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.sidebar-hd{padding:14px 18px;border-bottom:1px solid var(--border);font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--charcoal)}
+.sidebar-hd span{display:inline-block;width:3px;height:14px;background:var(--primary);border-radius:2px;margin-right:8px;vertical-align:middle}
+.sidebar-list{padding:0}
+.sb-item{display:flex;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .2s}
+.sb-item:last-child{border-bottom:none}
+.sb-item:hover{background:var(--azure)}
+.sb-thumb{width:70px;height:52px;min-width:70px;border-radius:6px;overflow:hidden}
+.sb-thumb img{width:100%;height:100%;object-fit:cover}
+.sb-info h4{font-family:'Playfair Display',serif;font-size:.83rem;font-weight:600;line-height:1.35;color:var(--charcoal);margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sb-info span{font-size:.65rem;color:var(--charcoal-3)}
+
+/* KATEGORI SIDEBAR */
+.cat-list{padding:8px 18px 12px}
+.cat-tag{display:inline-block;margin:5px 4px;padding:5px 12px;background:var(--azure);border:1px solid rgba(74,144,226,.2);border-radius:20px;font-size:.7rem;font-weight:600;color:var(--primary);cursor:pointer;transition:all .2s}
+.cat-tag:hover,.cat-tag.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* PAGINATION */
+.pagination{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:28px}
+.page-btn{width:36px;height:36px;border:1.5px solid var(--border);border-radius:8px;background:#fff;font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:500;color:var(--charcoal-2);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.page-btn:hover,.page-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.page-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── FULL PAGE ARTIKEL ── */
+#articlePage{display:none;position:fixed;inset:0;z-index:200;background:#f8fafc;overflow-y:auto}
+#articlePage.show{display:block;animation:pageIn .35s ease}
+@keyframes pageIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+.ap-nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.95);border-bottom:1px solid var(--border);backdrop-filter:blur(12px);padding:12px 5%;display:flex;align-items:center;gap:14px}
+.ap-back{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border:1.5px solid rgba(74,144,226,.3);border-radius:30px;color:var(--primary);background:none;font-family:'Montserrat',sans-serif;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .3s}
+.ap-back:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.ap-breadcrumb{font-size:.72rem;color:var(--charcoal-3);font-weight:400}
+.ap-breadcrumb span{color:var(--primary);font-weight:600}
+
+.ap-hero{position:relative;width:100%;height:min(55vh,480px);overflow:hidden}
+.ap-hero img{width:100%;height:100%;object-fit:cover}
+.ap-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,20,40,.72) 0%,rgba(10,20,40,.18) 55%,transparent 100%)}
+.ap-hero-info{position:absolute;bottom:0;left:0;right:0;padding:32px 8%}
+.ap-cat-badge{display:inline-block;padding:5px 14px;background:var(--primary);border-radius:20px;font-size:.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#fff;margin-bottom:14px}
+.ap-hero-title{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3.5vw,2.4rem);font-weight:700;line-height:1.25;color:#fff;margin-bottom:14px;max-width:760px}
+.ap-hero-meta{display:flex;align-items:center;gap:14px;font-size:.72rem;color:rgba(255,255,255,.8)}
+.ap-hero-meta span{display:flex;align-items:center;gap:5px}
+.ap-meta-dot{width:3px;height:3px;background:rgba(255,255,255,.5);border-radius:50%}
+
+.ap-body{max-width:760px;margin:0 auto;padding:48px 5% 80px}
+.ap-divider{width:52px;height:3px;background:linear-gradient(90deg,var(--primary),var(--teal));border-radius:2px;margin-bottom:28px}
+.ap-content{font-size:.96rem;font-weight:300;line-height:2;color:var(--charcoal-2)}
+.ap-content p{margin-bottom:18px}
+
+/* LOADING */
+.loading{text-align:center;padding:60px 20px;color:var(--charcoal-3)}
+.loading-spinner{width:36px;height:36px;border:3px solid var(--azure);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:60px 20px}
+.empty-state h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--charcoal);margin-bottom:8px}
+.empty-state p{font-size:.84rem;color:var(--charcoal-3);font-weight:300}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .main-layout{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .featured-card{grid-template-columns:1fr}
+  .featured-img{aspect-ratio:16/9}
+}
+@media(max-width:600px){
+  .art-item{grid-template-columns:120px 1fr}
+  .ap-hero{height:260px}
+  .ap-hero-title{font-size:1.3rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-top">
+    <div class="nav-logo">
+      <img src="Logo_ROOTS.jpg" alt="ROOTS" onerror="this.style.display='none'">
+      <div class="nav-div"></div>
+      <div class="nav-brand">
+        <span class="name">ROOTS</span>
+        <span class="sub">SMA IT Ukhuwah</span>
+      </div>
+    </div>
+    <div class="nav-right">
+      <a href="roots-website.html" class="nav-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Kembali ke Beranda
+      </a>
+    </div>
+  </div>
+  <div class="cat-bar" id="catBar">
+    <button class="cat-btn active" onclick="filterKat('semua', this)">Semua</button>
+  </div>
+</nav>
+
+<!-- MAIN CONTAINER -->
+<div class="container" id="listView">
+  <div class="page-header">
+    <h1>Berita & Karya Siswa</h1>
+    <p>Dokumentasi kegiatan, artikel edukasi, dan karya inspiratif dari anggota ROOTS SMA IT Ukhuwah Banjarmasin</p>
+  </div>
+
+  <div id="loadingState" class="loading">
+    <div class="loading-spinner"></div>
+    <p>Memuat artikel...</p>
+  </div>
+
+  <div id="mainContent" style="display:none">
+    <div id="featuredWrap"></div>
+    <div class="main-layout">
+      <div>
+        <div class="art-list" id="artList"></div>
+        <div class="pagination" id="pagination"></div>
+      </div>
+      <div class="sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-hd"><span></span>Artikel Terbaru</div>
+          <div class="sidebar-list" id="sidebarRecent"></div>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-hd"><span></span>Kategori</div>
+          <div class="cat-list" id="sidebarKat"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="emptyState" class="empty-state" style="display:none">
+    <h3>Belum Ada Artikel</h3>
+    <p>Artikel akan muncul di sini setelah dipublish melalui panel admin.</p>
+  </div>
+</div>
+
+<!-- FULL PAGE ARTIKEL -->
+<div id="articlePage">
+  <div class="ap-nav">
+    <button class="ap-back" onclick="closeArticle()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Kembali
+    </button>
+    <span class="ap-breadcrumb">Berita & Karya Siswa &rsaquo; <span id="apBreadKat"></span></span>
+  </div>
+
+  <div class="ap-hero">
+    <img id="apImg" src="" alt="">
+    <div class="ap-hero-overlay"></div>
+    <div class="ap-hero-info">
+      <div class="ap-cat-badge" id="apKat"></div>
+      <h1 class="ap-hero-title" id="apJudul"></h1>
+      <div class="ap-hero-meta">
+        <span id="apTanggal"></span>
+        <span class="ap-meta-dot"></span>
+        <span id="apPenulis"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ap-body">
+    <div class="ap-divider"></div>
+    <div class="ap-content" id="apIsi"></div>
+  </div>
+</div>
+
+<script>
+const SHEET_ID = '1FohP9Xf9A67p-Q-NOwNUxjVBwb7-wmye0pAMp3lN3nc';
+const GID      = '1948650084';
+const API_URL  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
+const PER_PAGE = 8;
+
+let allArticles = [];
+let filtered    = [];
+let currentPage = 1;
+
+/* ── HELPERS ── */
+function fmtTanggal(str) {
+  if (!str) return '';
+  const m = String(str).match(/Date\((\d+),(\d+),(\d+)\)/);
+  if (m) {
+    const d = new Date(+m[1], +m[2], +m[3]);
+    return d.toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
+  }
+  const d = new Date(str);
+  return isNaN(d) ? str : d.toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
+}
+
+function imgSrc(url) {
+  if (!url || url.trim() === '')
+    return 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80';
+  const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if (m) return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w800`;
+  return url;
+}
+
+/* ── FETCH ── */
+async function fetchArticles() {
+  try {
+    const res  = await fetch(API_URL);
+    const text = await res.text();
+    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S\w]+)\)/)[1]);
+    const rows = json.table.rows || [];
+
+    allArticles = rows.map(r => ({
+      tanggal:    r.c[0]?.v || '',
+      judul:      r.c[1]?.v || '',
+      penulis:    r.c[2]?.v || '',
+      kategori:   r.c[3]?.v || 'Umum',
+      isi_ringkas:r.c[4]?.v || '',
+      isi_lengkap:r.c[5]?.v || '',
+      link_foto:  r.c[6]?.v || ''
+    })).filter(a => a.judul && a.judul !== 'judul').reverse();
+
+    buildKategori();
+    filterKat('semua');
+    document.getElementById('loadingState').style.display = 'none';
+    if (allArticles.length === 0) {
+      document.getElementById('emptyState').style.display = 'block';
+    } else {
+      document.getElementById('mainContent').style.display = 'block';
+    }
+  } catch(e) {
+    document.getElementById('loadingState').innerHTML =
+      `<p style="color:#e74c3c;font-size:.85rem">Gagal memuat artikel. Coba refresh halaman.</p>`;
+    console.error(e);
+  }
+}
+
+/* ── KATEGORI ── */
+function buildKategori() {
+  const cats = [...new Set(allArticles.map(a => a.kategori))];
+  const bar  = document.getElementById('catBar');
+  const kat  = document.getElementById('sidebarKat');
+  cats.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn';
+    btn.textContent = c;
+    btn.onclick = () => filterKat(c, btn);
+    bar.appendChild(btn);
+    const tag = document.createElement('span');
+    tag.className = 'cat-tag';
+    tag.textContent = c;
+    tag.onclick = () => { filterKat(c); };
+    kat.appendChild(tag);
+  });
+}
+
+function filterKat(kat, btn) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else {
+    document.querySelectorAll('.cat-btn').forEach(b => {
+      if (b.textContent === kat) b.classList.add('active');
+    });
+  }
+  filtered = kat === 'semua' ? [...allArticles] : allArticles.filter(a => a.kategori === kat);
+  currentPage = 1;
+  renderPage();
+}
+
+/* ── RENDER ── */
+function renderPage() {
+  renderFeatured();
+  renderList();
+  renderSidebar();
+  renderPagination();
+}
+
+function renderFeatured() {
+  const wrap = document.getElementById('featuredWrap');
+  if (filtered.length === 0) { wrap.innerHTML = ''; return; }
+  const a = filtered[0];
+  wrap.innerHTML = `
+    <div class="featured-card" onclick="openArticle(0)">
+      <div class="featured-img">
+        <img src="${imgSrc(a.link_foto)}" alt="${a.judul}"
+             onerror="this.src='https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80'">
+        <span class="feat-cat">${a.kategori}</span>
+      </div>
+      <div class="featured-body">
+        <div class="feat-meta">
+          <span>${fmtTanggal(a.tanggal)}</span>
+          <span class="feat-dot"></span>
+          <span>${a.penulis}</span>
+        </div>
+        <h2>${a.judul}</h2>
+        <p>${a.isi_ringkas}</p>
+        <button class="read-btn" onclick="event.stopPropagation();openArticle(0)">
+          Baca Selengkapnya
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>`;
+}
+
+function renderList() {
+  const list  = document.getElementById('artList');
+  const start = 1 + (currentPage - 1) * PER_PAGE;
+  const end   = Math.min(start + PER_PAGE, filtered.length);
+  const items = filtered.slice(start, end);
+
+  if (items.length === 0 && filtered.length <= 1) {
+    list.innerHTML = '';
+    return;
+  }
+  if (items.length === 0) {
+    list.innerHTML = `<div class="empty-state"><h3>Tidak Ada Artikel</h3><p>Belum ada artikel di kategori ini.</p></div>`;
+    return;
+  }
+
+  list.innerHTML = items.map((a, i) => `
+    <div class="art-item" onclick="openArticle(${start + i})">
+      <div class="art-thumb">
+        <img src="${imgSrc(a.link_foto)}" alt="${a.judul}"
+             onerror="this.src='https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&q=80'">
+        <span class="art-thumb-cat">${a.kategori}</span>
+      </div>
+      <div class="art-body">
+        <div>
+          <h3>${a.judul}</h3>
+          <p>${a.isi_ringkas}</p>
+        </div>
+        <div class="art-meta">
+          <span>${fmtTanggal(a.tanggal)}</span>
+          <span>&#x2022;</span>
+          <span>${a.penulis}</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderSidebar() {
+  const sb     = document.getElementById('sidebarRecent');
+  const recent = allArticles.slice(0, 5);
+  sb.innerHTML = recent.map((a, i) => `
+    <div class="sb-item" onclick="openArticleByIndex(${allArticles.indexOf(a)})">
+      <div class="sb-thumb">
+        <img src="${imgSrc(a.link_foto)}" alt="${a.judul}"
+             onerror="this.src='https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=200&q=80'">
+      </div>
+      <div class="sb-info">
+        <h4>${a.judul}</h4>
+        <span>${fmtTanggal(a.tanggal)}</span>
+      </div>
+    </div>`).join('');
+}
+
+function renderPagination() {
+  const pg    = document.getElementById('pagination');
+  const total = Math.ceil((filtered.length - 1) / PER_PAGE);
+  if (total <= 1) { pg.innerHTML = ''; return; }
+  let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>`;
+  for (let i = 1; i <= total; i++) {
+    html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  }
+  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===total?'disabled':''}>
+    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>`;
+  pg.innerHTML = html;
+}
+
+function goPage(p) {
+  const total = Math.ceil((filtered.length - 1) / PER_PAGE);
+  if (p < 1 || p > total) return;
+  currentPage = p;
+  renderList();
+  renderPagination();
+  window.scrollTo({top: 0, behavior:'smooth'});
+}
+
+/* ── FULL PAGE ARTIKEL ── */
+function openArticle(filteredIdx) {
+  const a = filtered[filteredIdx];
+  if (!a) return;
+  showArticlePage(a);
+}
+
+function openArticleByIndex(allIdx) {
+  const a = allArticles[allIdx];
+  if (!a) return;
+  showArticlePage(a);
+}
+
+function showArticlePage(a) {
+  document.getElementById('apImg').src           = imgSrc(a.link_foto);
+  document.getElementById('apImg').onerror       = function(){ this.src='https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&q=80' };
+  document.getElementById('apKat').textContent   = a.kategori;
+  document.getElementById('apBreadKat').textContent = a.kategori;
+  document.getElementById('apJudul').textContent = a.judul;
+  document.getElementById('apTanggal').textContent = fmtTanggal(a.tanggal);
+  document.getElementById('apPenulis').textContent = a.penulis;
+
+  const pars = (a.isi_lengkap || a.isi_ringkas)
+    .split('\n').filter(p => p.trim())
+    .map(p => `<p>${p.trim()}</p>`).join('');
+  document.getElementById('apIsi').innerHTML = pars;
+
+  const page = document.getElementById('articlePage');
+  page.classList.add('show');
+  page.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeArticle() {
+  document.getElementById('articlePage').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeArticle(); });
+
+/* ── INIT ── */
+fetchArticles();
+</script>
+</body>
+</html>

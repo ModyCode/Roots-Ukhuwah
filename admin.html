@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — ROOTS CMS</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#4A90E2;--primary-dk:#2c6fbe;--teal:#50E3C2;
+  --charcoal:#333;--charcoal-2:#555;--charcoal-3:#888;
+  --border:#e8edf2;--azure:#F0F7FF;--white:#fff;
+  --sidebar-w:240px;
+  --success:#27ae60;--danger:#e74c3c;--warn:#f39c12;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Montserrat',sans-serif;background:#f4f7fb;color:var(--charcoal);min-height:100vh}
+
+/* ── LOGIN ── */
+.login-screen{position:fixed;inset:0;background:linear-gradient(135deg,#ebf5ff,#f0f7ff);display:flex;align-items:center;justify-content:center;z-index:999}
+.login-box{background:#fff;border-radius:20px;padding:40px;width:100%;max-width:400px;box-shadow:0 16px 48px rgba(74,144,226,.15);border:1px solid rgba(74,144,226,.15)}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo .name{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--primary);letter-spacing:3px;display:block}
+.login-logo .sub{font-size:.65rem;color:var(--charcoal-3);letter-spacing:1.5px;text-transform:uppercase}
+.login-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--charcoal);margin-bottom:6px;text-align:center}
+.login-sub{font-size:.78rem;color:var(--charcoal-3);text-align:center;margin-bottom:28px;font-weight:300}
+.form-field{margin-bottom:16px}
+.form-field label{display:block;font-size:.72rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--primary);margin-bottom:7px}
+.form-field input{width:100%;padding:12px 15px;background:var(--azure);border:1.5px solid rgba(74,144,226,.18);border-radius:10px;font-family:'Montserrat',sans-serif;font-size:.85rem;color:var(--charcoal);outline:none;transition:all .3s}
+.form-field input:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(74,144,226,.08)}
+.login-btn{width:100%;padding:13px;background:var(--primary);border:none;border-radius:10px;color:#fff;font-family:'Montserrat',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .3s;margin-top:4px}
+.login-btn:hover{background:var(--primary-dk)}
+.login-err{font-size:.75rem;color:var(--danger);text-align:center;margin-top:10px;display:none}
+
+/* ── APP LAYOUT ── */
+.app{display:none;min-height:100vh}
+.app.show{display:flex}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:50}
+.sb-logo{padding:20px 18px;border-bottom:1px solid var(--border)}
+.sb-logo .name{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--primary);letter-spacing:2.5px;display:block;line-height:1.1}
+.sb-logo .sub{font-size:.57rem;color:var(--charcoal-3);letter-spacing:1.3px;text-transform:uppercase}
+.sb-label{padding:18px 18px 8px;font-size:.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--charcoal-3)}
+.sb-nav{flex:1;padding:0 10px}
+.sb-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;border:none;background:transparent;border-radius:9px;font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:500;color:var(--charcoal-2);cursor:pointer;transition:all .2s;text-align:left;margin-bottom:3px}
+.sb-btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.sb-btn:hover{background:var(--azure);color:var(--primary)}
+.sb-btn.active{background:rgba(74,144,226,.1);color:var(--primary);font-weight:600}
+.sb-bottom{padding:14px 10px;border-top:1px solid var(--border)}
+.sb-user{display:flex;align-items:center;gap:10px;padding:10px 12px}
+.sb-avatar{width:32px;height:32px;background:linear-gradient(135deg,var(--primary),var(--teal));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff}
+.sb-user-info .uname{font-size:.78rem;font-weight:600;color:var(--charcoal)}
+.sb-user-info .urole{font-size:.62rem;color:var(--charcoal-3)}
+.logout-btn{display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px;border:none;background:transparent;border-radius:8px;font-family:'Montserrat',sans-serif;font-size:.75rem;font-weight:500;color:var(--charcoal-3);cursor:pointer;transition:all .2s;margin-top:4px}
+.logout-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.logout-btn:hover{color:var(--danger);background:rgba(231,76,60,.05)}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40}
+.topbar h2{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--charcoal)}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.view-site{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:1.5px solid rgba(74,144,226,.3);border-radius:30px;color:var(--primary);text-decoration:none;font-size:.73rem;font-weight:600;transition:all .3s}
+.view-site:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.view-site svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* CONTENT */
+.content{padding:28px;flex:1}
+.panel{display:none}
+.panel.show{display:block}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px;transition:all .3s}
+.stat-card:hover{border-color:rgba(74,144,226,.3);box-shadow:0 6px 20px rgba(74,144,226,.1);transform:translateY(-2px)}
+.stat-card .s-val{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--primary);display:block;margin-bottom:4px}
+.stat-card .s-label{font-size:.73rem;font-weight:400;color:var(--charcoal-3)}
+.stat-card .s-ico{width:40px;height:40px;background:rgba(74,144,226,.08);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.stat-card .s-ico svg{width:20px;height:20px;stroke:var(--primary);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* RECENT TABLE */
+.card{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.card-hd{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-hd h3{font-size:.85rem;font-weight:700;color:var(--charcoal)}
+.card-hd .card-action{font-size:.73rem;color:var(--primary);cursor:pointer;font-weight:500}
+table{width:100%;border-collapse:collapse}
+th{padding:12px 16px;font-size:.68rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--charcoal-3);border-bottom:1px solid var(--border);text-align:left;background:#fafbfc}
+td{padding:13px 16px;font-size:.8rem;color:var(--charcoal-2);border-bottom:1px solid var(--border);font-weight:300}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbfc}
+.badge{display:inline-block;padding:3px 9px;border-radius:12px;font-size:.63rem;font-weight:600;letter-spacing:.5px}
+.badge-blue{background:rgba(74,144,226,.1);color:var(--primary)}
+.badge-teal{background:rgba(80,227,194,.12);color:#2ea38a}
+.td-title{font-weight:500;color:var(--charcoal);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbl-action{display:flex;gap:6px}
+.tbl-btn{padding:5px 10px;border:1px solid var(--border);border-radius:6px;font-size:.68rem;font-weight:600;cursor:pointer;transition:all .2s;background:#fff;font-family:'Montserrat',sans-serif}
+.tbl-btn.edit{color:var(--primary);border-color:rgba(74,144,226,.3)}
+.tbl-btn.edit:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.tbl-btn.del{color:var(--danger);border-color:rgba(231,76,60,.25)}
+.tbl-btn.del:hover{background:var(--danger);color:#fff;border-color:var(--danger)}
+
+/* WRITE FORM */
+.write-grid{display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:start}
+.form-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px}
+.form-card h3{font-size:.85rem;font-weight:700;color:var(--charcoal);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.field-group{margin-bottom:18px}
+.field-group label{display:block;font-size:.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--primary);margin-bottom:7px}
+.field-group input,
+.field-group select,
+.field-group textarea{width:100%;padding:11px 14px;background:var(--azure);border:1.5px solid rgba(74,144,226,.18);border-radius:9px;font-family:'Montserrat',sans-serif;font-size:.84rem;color:var(--charcoal);outline:none;transition:all .3s;font-weight:300}
+.field-group input:focus,
+.field-group select:focus,
+.field-group textarea:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(74,144,226,.08)}
+.field-group textarea{min-height:120px;resize:vertical;line-height:1.7}
+.field-group textarea.tall{min-height:320px}
+.field-group input::placeholder,
+.field-group textarea::placeholder{color:var(--charcoal-3)}
+.field-group select option{background:#fff}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* Preview */
+.preview-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px;position:sticky;top:20px}
+.preview-card h3{font-size:.85rem;font-weight:700;color:var(--charcoal);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.preview-img-wrap{width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:var(--azure);margin-bottom:14px;display:flex;align-items:center;justify-content:center}
+.preview-img-wrap img{width:100%;height:100%;object-fit:cover}
+.preview-img-placeholder{font-size:.75rem;color:var(--charcoal-3);text-align:center}
+.preview-cat{display:inline-block;padding:3px 10px;background:rgba(74,144,226,.1);border-radius:12px;font-size:.63rem;font-weight:700;color:var(--primary);margin-bottom:10px}
+.preview-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--charcoal);line-height:1.4;margin-bottom:8px}
+.preview-ringkas{font-size:.78rem;font-weight:300;color:var(--charcoal-2);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.preview-meta{font-size:.67rem;color:var(--charcoal-3);margin-top:10px}
+
+/* PUBLISH BTN */
+.pub-actions{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.pub-btn{width:100%;padding:14px;border:none;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:.87rem;font-weight:600;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:8px}
+.pub-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pub-btn.publish{background:var(--primary);color:#fff;box-shadow:0 6px 18px rgba(74,144,226,.28)}
+.pub-btn.publish:hover{background:var(--primary-dk);transform:translateY(-1px)}
+.pub-btn.reset{background:transparent;color:var(--charcoal-3);border:1.5px solid var(--border)}
+.pub-btn.reset:hover{background:#f8fafc;color:var(--charcoal)}
+.pub-info{font-size:.72rem;color:var(--charcoal-3);text-align:center;line-height:1.6;font-weight:300;margin-top:4px}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;padding:14px 20px;border-radius:10px;font-size:.82rem;font-weight:500;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.15);transform:translateY(80px);opacity:0;transition:all .4s cubic-bezier(.22,.61,.36,1);z-index:9999;display:flex;align-items:center;gap:9px;max-width:340px}
+.toast.show{transform:none;opacity:1}
+.toast.success{background:var(--success)}
+.toast.error{background:var(--danger)}
+.toast.warn{background:var(--warn)}
+.toast svg{width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* LOADING overlay */
+.pub-loading{display:none;position:fixed;inset:0;background:rgba(255,255,255,.8);backdrop-filter:blur(4px);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+.pub-loading.show{display:flex}
+.pub-loading .spinner{width:40px;height:40px;border:3px solid rgba(74,144,226,.2);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pub-loading p{font-size:.84rem;color:var(--charcoal-2);font-weight:400}
+
+/* RESPONSIVE */
+@media(max-width:1024px){.stats-grid{grid-template-columns:1fr 1fr}.write-grid{grid-template-columns:1fr}}
+@media(max-width:768px){.sidebar{display:none}.main{margin-left:0}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <span class="name">ROOTS</span>
+      <span class="sub">Admin Panel — SMA IT Ukhuwah</span>
+    </div>
+    <h2 class="login-title">Masuk ke CMS</h2>
+    <p class="login-sub">Panel ini hanya untuk admin ROOTS yang berwenang.</p>
+    <div class="form-field">
+      <label>Username</label>
+      <input type="text" id="loginUser" placeholder="Masukkan username" autocomplete="username">
+    </div>
+    <div class="form-field">
+      <label>Password</label>
+      <input type="password" id="loginPass" placeholder="Masukkan password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Masuk ke Panel Admin</button>
+    <p class="login-err" id="loginErr">Username atau password salah.</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <span class="name">ROOTS</span>
+      <span class="sub">CMS Panel</span>
+    </div>
+    <div class="sb-nav">
+      <p class="sb-label">Menu</p>
+      <button class="sb-btn active" onclick="showPanel('dashboard', this)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </button>
+      <button class="sb-btn" onclick="showPanel('write', this)">
+        <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Tulis Artikel
+      </button>
+      <button class="sb-btn" onclick="showPanel('articles', this)">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Semua Artikel
+      </button>
+    </div>
+    <div class="sb-bottom">
+      <div class="sb-user">
+        <div class="sb-avatar" id="sbAvatar">A</div>
+        <div class="sb-user-info">
+          <span class="uname" id="sbUname">Admin</span>
+          <span class="urole">Administrator</span>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Keluar
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <h2 id="topbarTitle">Dashboard</h2>
+      <div class="topbar-right">
+        <a href="roots-website.html" target="_blank" class="view-site">
+          <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Lihat Halaman Berita
+        </a>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="panel show" id="panel-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="s-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+            <span class="s-val" id="statTotal">-</span>
+            <span class="s-label">Total Artikel</span>
+          </div>
+          <div class="stat-card">
+            <div class="s-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+            <span class="s-val" id="statBulan">-</span>
+            <span class="s-label">Artikel Bulan Ini</span>
+          </div>
+          <div class="stat-card">
+            <div class="s-ico"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
+            <span class="s-val" id="statKat">-</span>
+            <span class="s-label">Kategori</span>
+          </div>
+          <div class="stat-card">
+            <div class="s-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <span class="s-val" id="statPenulis">-</span>
+            <span class="s-label">Penulis</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd">
+            <h3>Artikel Terbaru</h3>
+            <span class="card-action" onclick="showPanel('articles', document.querySelector('.sb-btn:nth-child(3)'))">Lihat Semua</span>
+          </div>
+          <table>
+            <thead><tr><th>Judul</th><th>Penulis</th><th>Kategori</th><th>Tanggal</th></tr></thead>
+            <tbody id="recentTable"><tr><td colspan="4" style="text-align:center;color:var(--charcoal-3);padding:24px">Memuat...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TULIS ARTIKEL -->
+      <div class="panel" id="panel-write">
+        <div class="write-grid">
+          <div>
+            <div class="form-card">
+              <h3>Tulis Artikel Baru</h3>
+              <div class="field-group">
+                <label>Judul Artikel</label>
+                <input type="text" id="wJudul" placeholder="Masukkan judul artikel yang menarik..." oninput="autoConvertFoto()">
+              </div>
+              <div class="field-row">
+                <div class="field-group">
+                  <label>Penulis</label>
+                  <input type="text" id="wPenulis" placeholder="Nama penulis..." oninput="updatePreview()">
+                </div>
+                <div class="field-group">
+                  <label>Kategori</label>
+                  <select id="wKategori" oninput="updatePreview()">
+                    <option value="">Pilih atau Ketik Kategori</option>
+                    <option>Edukasi Sosial</option>
+                    <option>Kegiatan ROOTS</option>
+                    <option>Karya Siswa</option>
+                    <option>Anti Perundungan</option>
+                    <option>Dokumentasi</option>
+                    <option>Pengumuman</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field-group">
+                <label>Kategori Kustom (jika tidak ada di atas)</label>
+                <input type="text" id="wKategoriCustom" placeholder="Ketik kategori kustom..." oninput="updatePreview()">
+              </div>
+              <div class="field-group">
+                <label>Ringkasan Artikel</label>
+                <textarea id="wRingkas" placeholder="Tulis ringkasan singkat 2-3 kalimat yang akan ditampilkan di halaman daftar artikel..." oninput="updatePreview()"></textarea>
+              </div>
+              <div class="field-group">
+                <label>Isi Artikel Lengkap</label>
+                <textarea class="tall" id="wIsi" placeholder="Tulis isi artikel lengkap di sini. Tekan Enter untuk membuat paragraf baru.&#10;&#10;Setiap baris baru akan menjadi paragraf terpisah saat ditampilkan."></textarea>
+              </div>
+              <div class="field-group">
+                <label>Link Foto (URL gambar)</label>
+                <input type="text" id="wFoto" placeholder="Paste link Google Drive atau link foto lainnya" oninput="autoConvertFoto()">
+                <p style="font-size:.7rem;color:var(--charcoal-3);margin-top:6px;font-weight:300">Cara upload foto: Upload ke Google Drive, klik kanan foto, Bagikan, ubah ke Anyone with link, lalu copy link dan paste di sini. Atau gunakan layanan seperti imgbb.com</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- PREVIEW -->
+          <div>
+            <div class="preview-card">
+              <h3>Preview Artikel</h3>
+              <div class="preview-img-wrap" id="prevImgWrap">
+                <div class="preview-img-placeholder">Foto akan tampil di sini</div>
+              </div>
+              <span class="preview-cat" id="prevKat">Kategori</span>
+              <div class="preview-title" id="prevTitle">Judul artikel akan muncul di sini</div>
+              <div class="preview-ringkas" id="prevRingkas">Ringkasan artikel akan muncul di sini setelah kamu mengisi field di sebelah kiri.</div>
+              <div class="preview-meta" id="prevMeta">Hari ini &middot; Nama Penulis</div>
+            </div>
+            <div class="pub-actions">
+              <button class="pub-btn publish" onclick="publishArtikel()">
+                <svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+                Publish Artikel
+              </button>
+              <button class="pub-btn reset" onclick="resetForm()">
+                <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.75"/></svg>
+                Reset Form
+              </button>
+              <p class="pub-info">Artikel akan langsung tersimpan ke Google Sheets dan tampil di halaman berita dalam beberapa detik.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEMUA ARTIKEL -->
+      <div class="panel" id="panel-articles">
+        <div class="card">
+          <div class="card-hd">
+            <h3>Semua Artikel</h3>
+            <span class="card-action" onclick="showPanel('write', document.querySelectorAll('.sb-btn')[1])">+ Tulis Baru</span>
+          </div>
+          <table>
+            <thead><tr><th>Judul</th><th>Penulis</th><th>Kategori</th><th>Tanggal</th><th>Aksi</th></tr></thead>
+            <tbody id="allTable"><tr><td colspan="5" style="text-align:center;color:var(--charcoal-3);padding:24px">Memuat...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div class="pub-loading" id="pubLoading">
+  <div class="spinner"></div>
+  <p>Mempublish artikel ke Google Sheets...</p>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg id="toastIcon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+/* ──────────────────────────────────────────
+   CONFIG — GANTI SESUAI DATA KAMU
+────────────────────────────────────────── */
+const SHEET_ID  = '1FohP9Xf9A67p-Q-NOwNUxjVBwb7-wmye0pAMp3lN3nc';
+const GID       = '1948650084';
+
+// Kredensial admin — GANTI sebelum deploy!
+const ADMIN_CREDENTIALS = {
+  'roots.admin': 'admin2026'
+};
+
+// Google Apps Script URL untuk WRITE data (isi setelah deploy Apps Script)
+// Panduan: lihat di bawah script ini
+let APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0npjyfL9QYlwc_4kv_IdFSxfd-Fo0iKgvLdZGmROh_URDPtNN9UYxqXLHceDiNA7U/exec';
+
+/* ──────────────────────────────────────────
+   AUTH
+────────────────────────────────────────── */
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value.trim();
+  
+  // Hardcode langsung, bypass ADMIN_CREDENTIALS
+  if (u === 'roots.admin' && p === 'admin2026') {
+    sessionStorage.setItem('roots_admin', u);
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').classList.add('show');
+    document.getElementById('sbUname').textContent = u;
+    document.getElementById('sbAvatar').textContent = u[0].toUpperCase();
+    loadData();
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+    document.getElementById('loginPass').value = '';
+    console.log('Gagal - user:', u, 'pass:', p);
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem('roots_admin');
+  location.reload();
+}
+
+// Auto-login jika session masih ada
+if (sessionStorage.getItem('roots_admin')) {
+  const u = sessionStorage.getItem('roots_admin');
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').classList.add('show');
+  document.getElementById('sbUname').textContent = u;
+  document.getElementById('sbAvatar').textContent = u[0].toUpperCase();
+  loadData();
+}
+
+/* ──────────────────────────────────────────
+   PANELS
+────────────────────────────────────────── */
+function showPanel(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('show');
+  if (btn) btn.classList.add('active');
+  const titles = {dashboard:'Dashboard', write:'Tulis Artikel Baru', articles:'Semua Artikel'};
+  document.getElementById('topbarTitle').textContent = titles[id] || '';
+  if (id === 'articles') renderAllTable();
+}
+
+/* ──────────────────────────────────────────
+   DATA
+────────────────────────────────────────── */
+let allData = [];
+
+async function loadData() {
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/1FohP9Xf9A67p-Q-NOwNUxjVBwb7-wmye0pAMp3lN3nc/gviz/tq?tqx=out:json&gid=1948650084&headers=1`;
+    const res = await fetch(url);
+    const text = await res.text();
+
+    const startPos = text.indexOf('{');
+    const endPos = text.lastIndexOf('}');
+    const jsonString = text.substring(startPos, endPos + 1);
+    const json = JSON.parse(jsonString);
+    
+    allData = (json.table.rows || []).map(r => ({
+     tanggal: r.c[0]?.v || '',
+     judul: r.c[1]?.v || '',
+     penulis: r.c[2]?.v || '',
+     kategori: r.c[3]?.v || '',
+     isi_ringkas: r.c[4]?.v || '',
+     isi_lengkap: r.c[5]?.v || '', // Kolom F
+     link_foto: r.c[6]?.v || ''    // Kolom G
+})).filter(a => a.judul && a.judul !== 'judul').reverse();
+
+    renderDashboard();
+    console.log("Data berhasil terhubung!", allData); // Cek ini di Console F12
+  } catch(e) {
+    console.error('Gagal load data. Pastikan akses Sheet adalah "Anyone with the link":', e);
+  }
+}
+
+function fmtTgl(str) {
+  if (!str) return '-';
+  const d = new Date(str);
+  if (isNaN(d)) return str;
+  return d.toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'});
+}
+
+/* ──────────────────────────────────────────
+   DASHBOARD
+────────────────────────────────────────── */
+function renderDashboard() {
+  document.getElementById('statTotal').textContent   = allData.length;
+  const now = new Date();
+  const bulan = allData.filter(a => {
+    const d = new Date(a.tanggal);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).length;
+  document.getElementById('statBulan').textContent   = bulan;
+  document.getElementById('statKat').textContent     = new Set(allData.map(a => a.kategori)).size;
+  document.getElementById('statPenulis').textContent = new Set(allData.map(a => a.penulis)).size;
+
+  const tbl = document.getElementById('recentTable');
+  const recent = allData.slice(0, 5);
+  if (recent.length === 0) {
+    tbl.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--charcoal-3);padding:24px">Belum ada artikel.</td></tr>`;
+    return;
+  }
+  tbl.innerHTML = recent.map(a => `
+    <tr>
+      <td class="td-title">${a.judul}</td>
+      <td>${a.penulis}</td>
+      <td><span class="badge badge-blue">${a.kategori}</span></td>
+      <td>${fmtTgl(a.tanggal)}</td>
+    </tr>`).join('');
+}
+
+/* ──────────────────────────────────────────
+   ALL ARTICLES TABLE
+────────────────────────────────────────── */
+function renderAllTable() {
+  const tbl = document.getElementById('allTable');
+  if (allData.length === 0) {
+    tbl.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--charcoal-3);padding:24px">Belum ada artikel.</td></tr>`;
+    return;
+  }
+  tbl.innerHTML = allData.map((a, i) => `
+    <tr>
+      <td class="td-title">${a.judul}</td>
+      <td>${a.penulis || '-'}</td>
+      <td><span class="badge badge-blue">${a.kategori || '-'}</span></td>
+      <td>${fmtTgl(a.tanggal)}</td>
+      <td><div class="tbl-action">
+        <button class="tbl-btn edit" onclick="editArtikel(${i})">Edit</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+/* ──────────────────────────────────────────
+   PREVIEW
+────────────────────────────────────────── */
+function autoConvertFoto(){
+  const input = document.getElementById('wFoto')
+  let url = input.value.trim()
+  // Auto konversi Google Drive share link
+  const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/)
+  if(m){
+    input.value = `https://drive.google.com/uc?export=view&id=${m[1]}`
+  }
+  updatePreview()
+}
+function updatePreview() {
+  const judul    = document.getElementById('wJudul').value;
+  const penulis  = document.getElementById('wPenulis').value;
+  const kat      = document.getElementById('wKategoriCustom').value || document.getElementById('wKategori').value;
+  const ringkas  = document.getElementById('wRingkas').value;
+  const foto     = document.getElementById('wFoto').value;
+
+  document.getElementById('prevTitle').textContent   = judul   || 'Judul artikel akan muncul di sini';
+  document.getElementById('prevRingkas').textContent = ringkas || 'Ringkasan artikel...';
+  document.getElementById('prevKat').textContent     = kat     || 'Kategori';
+  document.getElementById('prevMeta').textContent    = `${new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})} · ${penulis||'Nama Penulis'}`;
+
+  const wrap = document.getElementById('prevImgWrap');
+  if (foto.trim()) {
+    wrap.innerHTML = `<img src="${foto}" onerror="this.parentElement.innerHTML='<div class=preview-img-placeholder>URL foto tidak valid</div>'">`;
+  } else {
+    wrap.innerHTML = `<div class="preview-img-placeholder">Foto akan tampil di sini</div>`;
+  }
+}
+
+/* ──────────────────────────────────────────
+   PUBLISH
+────────────────────────────────────────── */
+async function publishArtikel() {
+  const judul    = document.getElementById('wJudul').value.trim();
+  const penulis  = document.getElementById('wPenulis').value.trim();
+  const kat      = (document.getElementById('wKategoriCustom').value || document.getElementById('wKategori').value).trim();
+  const ringkas  = document.getElementById('wRingkas').value.trim();
+  const isi      = document.getElementById('wIsi').value.trim();
+  const foto     = document.getElementById('wFoto').value.trim();
+
+  if (!judul)   { showToast('Judul artikel tidak boleh kosong.', 'error'); return; }
+  if (!penulis) { showToast('Nama penulis tidak boleh kosong.', 'error'); return; }
+  if (!kat)     { showToast('Pilih atau isi kategori artikel.', 'error'); return; }
+  if (!ringkas) { showToast('Ringkasan artikel tidak boleh kosong.', 'error'); return; }
+  if (!isi)     { showToast('Isi artikel tidak boleh kosong.', 'error'); return; }
+
+  const tanggal = new Date().toISOString().split('T')[0];
+
+  // Cek apakah Apps Script URL sudah diisi
+  if (!APPS_SCRIPT_URL) {
+    // Mode demo: tampilkan data yang akan dikirim
+    showToast('Apps Script URL belum diisi. Baca panduan di bawah.', 'warn');
+    console.log('DATA YANG AKAN DIKIRIM:', {tanggal, judul, penulis, kategori:kat, isi_ringkas:ringkas, isi_lengkap:isi, link_foto:foto});
+    showDemoSuccess({tanggal, judul, penulis, kategori:kat, isi_ringkas:ringkas, isi_lengkap:isi, link_foto:foto});
+    return;
+  }
+
+  document.getElementById('pubLoading').classList.add('show');
+
+  try {
+    const payload = { tanggal, judul, penulis, kategori:kat, isi_ringkas:ringkas, isi_lengkap:isi, link_foto:foto };
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    document.getElementById('pubLoading').classList.remove('show');
+    showToast('Artikel berhasil dipublish!', 'success');
+    resetForm();
+    setTimeout(() => loadData(), 2000);
+  } catch(e) {
+    document.getElementById('pubLoading').classList.remove('show');
+    showToast('Gagal publish. Cek koneksi dan coba lagi.', 'error');
+    console.error(e);
+  }
+}
+
+function showDemoSuccess(data) {
+  // Tampilkan modal konfirmasi data
+  alert(`DEMO MODE — Data siap dikirim ke Google Sheets:\n\nJudul: ${data.judul}\nPenulis: ${data.penulis}\nKategori: ${data.kategori}\nTanggal: ${data.tanggal}\n\nUntuk mengaktifkan publish sungguhan, setup Google Apps Script terlebih dahulu (lihat panduan di file README.md).`);
+}
+
+function editArtikel(idx) {
+  const a = allData[idx];
+  showPanel('write', document.querySelectorAll('.sb-btn')[1]);
+  document.getElementById('wJudul').value   = a.judul;
+  document.getElementById('wPenulis').value = a.penulis;
+  document.getElementById('wKategori').value = '';
+  document.getElementById('wKategoriCustom').value = a.kategori;
+  document.getElementById('wRingkas').value = a.isi_ringkas;
+  document.getElementById('wIsi').value     = a.isi_lengkap;
+  document.getElementById('wFoto').value    = a.link_foto;
+  updatePreview();
+  showToast('Data artikel dimuat ke form. Edit lalu publish ulang.', 'warn');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function resetForm() {
+  ['wJudul','wPenulis','wKategoriCustom','wRingkas','wIsi','wFoto'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('wKategori').value = '';
+  updatePreview();
+}
+
+/* ──────────────────────────────────────────
+   TOAST
+────────────────────────────────────────── */
+let toastTimer;
+function showToast(msg, type='success') {
+  const t   = document.getElementById('toast');
+  const ico = document.getElementById('toastIcon');
+  const icons = {
+    success: '<polyline points="20 6 9 17 4 12"/>',
+    error:   '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>',
+    warn:    '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>'
+  };
+  t.className = `toast ${type}`;
+  t.querySelector('svg').innerHTML = icons[type] || icons.success;
+  document.getElementById('toastMsg').textContent = msg;
+  clearTimeout(toastTimer);
+  setTimeout(() => t.classList.add('show'), 10);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+}
+</script>
+
+<!-- ════════════════════════════════════════════════════════════
+  PANDUAN SETUP GOOGLE APPS SCRIPT (BACA INI!)
+  ════════════════════════════════════════════════════════════
+  Agar tombol "Publish Artikel" bisa menulis ke Google Sheets,
+  kamu perlu setup Google Apps Script sekali saja.
+
+  LANGKAH:
+  1. Buka Google Sheets kamu
+  2. Klik menu "Ekstensi" → "Apps Script"
+  3. Hapus kode yang ada, paste kode ini:
+
+  ------- KODE APPS SCRIPT (copy mulai dari bawah ini) -------
+
+  function doPost(e) {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+    const data  = JSON.parse(e.postData.contents);
+    sheet.appendRow([
+      data.tanggal,
+      data.judul,
+      data.penulis,
+      data.kategori,
+      data.isi_ringkas,
+      data.isi_lengkap,
+      data.link_foto
+    ]);
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'ok'}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  ------- KODE APPS SCRIPT SELESAI -------
+
+  4. Klik "Deploy" → "New Deployment"
+  5. Pilih Type: "Web App"
+  6. Execute as: "Me"
+  7. Who has access: "Anyone"
+  8. Klik "Deploy" → Copy URL yang muncul
+  9. Paste URL tersebut ke variabel APPS_SCRIPT_URL di atas (baris ~30)
+
+  SELESAI! Tombol Publish akan langsung menulis ke Google Sheets.
+════════════════════════════════════════════════════════════ -->
+</body>
+</html>
